@@ -21,12 +21,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Перечисление лиг для более четкой структуры
-enum League {
-  Green,
-  Red,
-}
-
 class GameLevel {
   final String name;
   final String description;
@@ -35,8 +29,6 @@ class GameLevel {
   final double gravity;
   final double obstacleSpeed;
   final int targetScore;
-  final League league; // Добавляем лигу к уровню
-  final bool hasPlatforms; // Добавляем признак наличия платформ
 
   GameLevel({
     required this.name,
@@ -46,155 +38,62 @@ class GameLevel {
     required this.gravity,
     required this.obstacleSpeed,
     required this.targetScore,
-    required this.league,
-    this.hasPlatforms = false,
   });
 }
 
-class MainMenu extends StatefulWidget {
+class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);
 
-  @override
-  _MainMenuState createState() => _MainMenuState();
-}
-
-class _MainMenuState extends State<MainMenu> {
-  League selectedLeague = League.Green; // По умолчанию выбрана зеленая лига
-  int totalScore = 0; // Общий счет игрока
-  bool isRedLeagueUnlocked = false; // Разблокирована ли красная лига
-
-  // Уровни зеленой лиги
-  static List<GameLevel> greenLeagueLevels = [
+  static List<GameLevel> levels = [
     GameLevel(
       name: "Уровень 1",
       description: "Легкий старт для новичков",
       color: Colors.green,
       obstacleFrequency: 100,
-      gravity: 0.002, // Уменьшаем гравитацию для облегчения прыжков
+      gravity: 0.003,
       obstacleSpeed: 0.005,
       targetScore: 150,
-      league: League.Green,
     ),
     GameLevel(
       name: "Уровень 2",
       description: "Немного быстрее",
-      color: Colors.lightGreen,
+      color: Colors.lightBlue,
       obstacleFrequency: 80,
-      gravity: 0.0025,
+      gravity: 0.004,
       obstacleSpeed: 0.008,
       targetScore: 250,
-      league: League.Green,
     ),
     GameLevel(
       name: "Уровень 3",
       description: "Будь осторожен!",
-      color: Colors.green.shade600,
-      obstacleFrequency: 70,
-      gravity: 0.003,
+      color: Colors.amber,
+      obstacleFrequency: 60,
+      gravity: 0.005,
       obstacleSpeed: 0.01,
       targetScore: 350,
-      league: League.Green,
-      hasPlatforms: true, // Добавляем платформы
     ),
     GameLevel(
       name: "Уровень 4",
-      description: "Ловко прыгай!",
-      color: Colors.green.shade700,
-      obstacleFrequency: 60,
-      gravity: 0.0035,
-      obstacleSpeed: 0.012,
+      description: "Для опытных игроков",
+      color: Colors.orange,
+      obstacleFrequency: 40,
+      gravity: 0.006,
+      obstacleSpeed: 0.015,
       targetScore: 450,
-      league: League.Green,
-      hasPlatforms: true,
     ),
     GameLevel(
       name: "Уровень 5",
-      description: "Финал зеленой лиги!",
-      color: Colors.green.shade900,
-      obstacleFrequency: 50,
-      gravity: 0.004,
-      obstacleSpeed: 0.015,
-      targetScore: 600,
-      league: League.Green,
-      hasPlatforms: true,
-    ),
-  ];
-
-  // Уровни красной лиги (более сложные)
-  static List<GameLevel> redLeagueLevels = [
-    GameLevel(
-      name: "Уровень 6",
-      description: "Добро пожаловать в ад",
-      color: Colors.red.shade300,
-      obstacleFrequency: 45,
-      gravity: 0.0045,
-      obstacleSpeed: 0.018,
-      targetScore: 700,
-      league: League.Red,
-      hasPlatforms: true,
-    ),
-    GameLevel(
-      name: "Уровень 7",
-      description: "Красная зона",
-      color: Colors.red.shade400,
-      obstacleFrequency: 40,
-      gravity: 0.005,
-      obstacleSpeed: 0.02,
-      targetScore: 800,
-      league: League.Red,
-      hasPlatforms: true,
-    ),
-    GameLevel(
-      name: "Уровень 8",
-      description: "Выживание",
-      color: Colors.red.shade600,
-      obstacleFrequency: 35,
-      gravity: 0.0055,
-      obstacleSpeed: 0.022,
-      targetScore: 900,
-      league: League.Red,
-      hasPlatforms: true,
-    ),
-    GameLevel(
-      name: "Уровень 9",
-      description: "Почти невозможный",
-      color: Colors.red.shade700,
+      description: "Высший уровень сложности!",
+      color: Colors.red,
       obstacleFrequency: 30,
-      gravity: 0.006,
-      obstacleSpeed: 0.025,
-      targetScore: 1000,
-      league: League.Red,
-      hasPlatforms: true,
-    ),
-    GameLevel(
-      name: "Уровень 10",
-      description: "Мастер игры",
-      color: Colors.red.shade900,
-      obstacleFrequency: 25,
-      gravity: 0.0065,
-      obstacleSpeed: 0.03,
-      targetScore: 1200,
-      league: League.Red,
-      hasPlatforms: true,
+      gravity: 0.007,
+      obstacleSpeed: 0.02,
+      targetScore: 600,
     ),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    // Здесь можно было бы загрузить сохраненные данные
-    // Проверим, доступна ли красная лига (допустим, если набрано 2000 очков)
-    if (totalScore >= 2000) {
-      isRedLeagueUnlocked = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    // Определяем список уровней в зависимости от выбранной лиги
-    List<GameLevel> levels =
-        selectedLeague == League.Green ? greenLeagueLevels : redLeagueLevels;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Шарик в лунку"),
@@ -205,79 +104,20 @@ class _MainMenuState extends State<MainMenu> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: selectedLeague == League.Green
-                ? [Colors.blue[100]!, Colors.green[300]!]
-                : [Colors.orange[100]!, Colors.red[300]!],
+            colors: [Colors.blue[100]!, Colors.blue[300]!],
           ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              Text(
-                "Общий счет: $totalScore",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: selectedLeague == League.Green
-                      ? Colors.green[800]
-                      : Colors.red[800],
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // Переключатель лиг
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        selectedLeague = League.Green;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedLeague == League.Green
-                          ? Colors.green
-                          : Colors.grey,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                    ),
-                    child: const Text("Зеленая лига"),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: isRedLeagueUnlocked
-                        ? () {
-                            setState(() {
-                              selectedLeague = League.Red;
-                            });
-                          }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: selectedLeague == League.Red
-                          ? Colors.red
-                          : Colors.grey,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
-                    ),
-                    child: Text(isRedLeagueUnlocked
-                        ? "Красная лига"
-                        : "Красная лига (нужно 2000 очков)"),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
               Text(
                 "Выберите уровень",
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: selectedLeague == League.Green
-                      ? Colors.green[800]
-                      : Colors.red[800],
+                  color: Colors.blue[800],
                   shadows: [
                     Shadow(
                       blurRadius: 5.0,
@@ -287,7 +127,7 @@ class _MainMenuState extends State<MainMenu> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               Expanded(
                 child: ListView.builder(
                   itemCount: levels.length,
@@ -298,24 +138,6 @@ class _MainMenuState extends State<MainMenu> {
                       child: LevelCard(
                         level: level,
                         index: index,
-                        onLevelSelected: (level) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GameScreen(
-                                level: level,
-                                onScoreUpdate: (additionalScore) {
-                                  setState(() {
-                                    totalScore += additionalScore;
-                                    if (totalScore >= 2000) {
-                                      isRedLeagueUnlocked = true;
-                                    }
-                                  });
-                                },
-                              ),
-                            ),
-                          );
-                        },
                       ),
                     );
                   },
@@ -332,13 +154,11 @@ class _MainMenuState extends State<MainMenu> {
 class LevelCard extends StatelessWidget {
   final GameLevel level;
   final int index;
-  final Function(GameLevel) onLevelSelected;
 
   const LevelCard({
     Key? key,
     required this.level,
     required this.index,
-    required this.onLevelSelected,
   }) : super(key: key);
 
   @override
@@ -349,7 +169,14 @@ class LevelCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       child: InkWell(
-        onTap: () => onLevelSelected(level),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GameScreen(level: level),
+            ),
+          );
+        },
         borderRadius: BorderRadius.circular(15),
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -408,15 +235,6 @@ class LevelCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     ),
-                    if (level.hasPlatforms)
-                      const Text(
-                        "С движущимися платформами!",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.yellow,
-                        ),
-                      ),
                   ],
                 ),
               ),
@@ -430,53 +248,6 @@ class LevelCard extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-// Определение класса бонуса (зеленый или красный квадрат)
-class Bonus {
-  double x;
-  double y;
-  double size;
-  bool
-      isGood; // true - зеленый (положительный), false - красный (отрицательный)
-  bool isActive;
-
-  Bonus({
-    required this.x,
-    required this.y,
-    required this.size,
-    required this.isGood,
-    this.isActive = true,
-  });
-}
-
-// Класс для платформ
-class Platform {
-  double x;
-  double y;
-  double width;
-  double height;
-  double speedX; // Горизонтальная скорость движения
-  double minX; // Минимальная позиция X
-  double maxX; // Максимальная позиция X
-
-  Platform({
-    required this.x,
-    required this.y,
-    required this.width,
-    required this.height,
-    required this.speedX,
-    required this.minX,
-    required this.maxX,
-  });
-
-  // Обновление позиции платформы
-  void update() {
-    x += speedX;
-    if (x <= minX || x >= maxX) {
-      speedX *= -1; // Меняем направление при достижении границы
-    }
   }
 }
 
@@ -496,13 +267,8 @@ class Obstacle {
 
 class GameScreen extends StatefulWidget {
   final GameLevel level;
-  final Function(int) onScoreUpdate; // Функция для обновления общего счета
 
-  const GameScreen({
-    Key? key,
-    required this.level,
-    required this.onScoreUpdate,
-  }) : super(key: key);
+  const GameScreen({Key? key, required this.level}) : super(key: key);
 
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -512,113 +278,72 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   // Позиция шарика
   double ballX = 0.0;
   double ballY = 0.0;
-
+  
   // Позиция лунки
   double holeX = 0.0;
   double holeY = -0.5;
-
+  
   // Размеры
   double ballSize = 30.0;
   double holeSize = 40.0;
   double obstacleBaseSize = 35.0;
-  double bonusSize = 25.0;
-
+  
   // Скорость и направление движения
   double ballSpeedX = 0.0;
   double ballSpeedY = 0.0;
-  double jumpForce = -0.04; // Увеличиваем силу прыжка
-  double diagonalForce = 0.025; // Увеличиваем силу бокового движения
-
-  // Препятствия и бонусы
+  double jumpForce = -0.03;
+  double diagonalForce = 0.02;
+  
+  // Препятствия
   List<Obstacle> obstacles = [];
-  List<Bonus> bonuses = [];
-  List<Platform> platforms = [];
   int frameCount = 0;
-  int bonusSpawnRate = 120; // Частота появления бонусов
-
+  
   // Статус игры
   bool gameOver = false;
   bool gameWon = false;
   bool levelCompleted = false;
   int score = 0;
-  int scoreToAdd = 0; // Счет, который будет добавлен при завершении уровня
-
+  
   late AnimationController _controller;
-
+  
   @override
   void initState() {
     super.initState();
-
+    
     // Генерируем случайную позицию для лунки
     final random = Random();
     holeX = random.nextDouble() * 1.5 - 0.75; // От -0.75 до 0.75
-
-    // Добавляем платформы, если уровень их поддерживает
-    if (widget.level.hasPlatforms) {
-      _initPlatforms();
-    }
-
+    
     // Настраиваем таймер для обновления игры
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
     )..repeat();
-
+    
     _controller.addListener(_updateGame);
   }
-
-  void _initPlatforms() {
-    final random = Random();
-
-    // Добавляем несколько платформ
-    for (int i = 0; i < 3; i++) {
-      double platformX = random.nextDouble() * 1.6 - 0.8;
-      double platformY = -0.3 + i * 0.4; // Распределяем по высоте
-      double platformWidth = 100.0 + random.nextDouble() * 50.0;
-
-      platforms.add(Platform(
-        x: platformX,
-        y: platformY,
-        width: platformWidth,
-        height: 15.0,
-        speedX: 0.005 + random.nextDouble() * 0.01,
-        minX: -0.8,
-        maxX: 0.8,
-      ));
-    }
-  }
-
+  
   void _updateGame() {
     if (gameOver) return;
-
+    
     setState(() {
       frameCount++;
-
+      
       // Создаем новые препятствия с частотой, зависящей от уровня
       if (frameCount % widget.level.obstacleFrequency == 0) {
         _addObstacle();
       }
-
-      // Создаем новые бонусы время от времени
-      if (frameCount % bonusSpawnRate == 0) {
-        _addBonus();
-      }
-
-      // Обновляем позиции платформ
-      for (var platform in platforms) {
-        platform.update();
-      }
-
+      
       // Обновляем позиции препятствий
       _updateObstacles();
-
+      
       // Применяем гравитацию, зависящую от уровня
       ballSpeedY += widget.level.gravity;
-
+      
       // Обновляем позицию шарика
       ballX += ballSpeedX;
       ballY += ballSpeedY;
-
+      
       // Проверяем столкновения со стенками
       if (ballX < -1.0) {
         ballX = -1.0;
@@ -627,7 +352,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         ballX = 1.0;
         ballSpeedX *= -0.7;
       }
-
+      
       // Проверка на дно экрана
       if (ballY > 1.0) {
         ballY = 1.0;
@@ -635,53 +360,43 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         // Трение о поверхность
         ballSpeedX *= 0.95;
       }
-
-      // Проверяем столкновения с платформами
-      _checkPlatformCollisions();
-
+      
       // Проверяем столкновения с препятствиями
       _checkObstacleCollisions();
-
-      // Проверяем сбор бонусов
-      _checkBonusCollisions();
-
+      
       // Проверяем попадание в лунку
       final distance = sqrt(pow(ballX - holeX, 2) + pow(ballY - holeY, 2));
       if (distance < 0.1) {
         gameOver = true;
         gameWon = true;
-        scoreToAdd += 100; // За попадание в лунку
-        score += scoreToAdd;
-
+        score += 100;
+        
         // Проверяем, выполнена ли цель уровня
         if (score >= widget.level.targetScore) {
           levelCompleted = true;
         }
-
-        // Обновляем общий счет
-        widget.onScoreUpdate(score);
-
+        
         _controller.stop();
       }
-
+      
       // Замедление движения для реалистичности
       ballSpeedX *= 0.99;
       ballSpeedY *= 0.99;
     });
   }
-
+  
   void _addObstacle() {
     final random = Random();
-
+    
     // Случайная позиция по X
     double obstacleX = random.nextDouble() * 1.8 - 0.9; // От -0.9 до 0.9
-
+    
     // Случайный размер
     double size = obstacleBaseSize + random.nextDouble() * 15;
-
+    
     // Скорость зависит от уровня
     double speedY = widget.level.obstacleSpeed + random.nextDouble() * 0.01;
-
+    
     obstacles.add(Obstacle(
       x: obstacleX,
       y: -1.2, // Начинаем над экраном
@@ -689,332 +404,328 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       speedY: speedY,
     ));
   }
-
-  void _addBonus() {
-    final random = Random();
-
-    // Случайная позиция
-    double bonusX = random.nextDouble() * 1.6 - 0.8; // От -0.8 до 0.8
-    double bonusY = -1.2; // Начинаем над экраном
-
-    // Случайно определяем тип бонуса
-    bool isGood = random.nextBool();
-
-    bonuses.add(Bonus(
-      x: bonusX,
-      y: bonusY,
-      size: bonusSize,
-      isGood: isGood,
-    ));
-  }
-
+  
   void _updateObstacles() {
     // Обновляем позиции препятствий и удаляем те, что вышли за пределы экрана
     obstacles.removeWhere((obstacle) {
       obstacle.y += obstacle.speedY;
       return obstacle.y > 1.5; // Удаляем, если вышел за нижнюю границу
     });
-
-    // Обновляем позиции бонусов
-    bonuses.removeWhere((bonus) {
-      bonus.y += widget.level.obstacleSpeed;
-      return (bonus.y > 1.5 ||
-          !bonus.isActive); // Удаляем, если вышел за экран или собран
-    });
   }
-
-  void _checkPlatformCollisions() {
-    for (var platform in platforms) {
-      // Проверяем, находится ли шарик над платформой и падает ли он
-      bool isAbovePlatform = ballX >=
-              platform.x -
-                  platform.width / MediaQuery.of(context).size.width / 2 &&
-          ballX <=
-              platform.x +
-                  platform.width / MediaQuery.of(context).size.width / 2;
-
-      double ballBottom =
-          ballY + ballSize / MediaQuery.of(context).size.height / 3 / 2;
-      double platformTop = platform.y -
-          platform.height / MediaQuery.of(context).size.height / 3 / 2;
-
-      double prevBallBottom = ballBottom - ballSpeedY;
-
-      if (isAbovePlatform &&
-          ballBottom >= platformTop &&
-          prevBallBottom < platformTop &&
-          ballSpeedY > 0) {
-        // Шарик приземлился на платформу
-        ballY = platform.y -
-            (ballSize + platform.height) /
-                MediaQuery.of(context).size.height /
-                3 /
-                2;
-        ballSpeedY = 0;
-
-        // Платформа "несет" шарик
-        ballX += platform.speedX;
-      }
-    }
-  }
-
+  
   void _checkObstacleCollisions() {
     for (var obstacle in obstacles) {
-      final distance =
-          sqrt(pow(ballX - obstacle.x, 2) + pow(ballY - obstacle.y, 2));
-      double collisionDistance =
-          (ballSize + obstacle.size) / 2 / MediaQuery.of(context).size.width;
-
+      final distance = sqrt(pow(ballX - obstacle.x, 2) + pow(ballY - obstacle.y, 2));
+      double collisionDistance = (ballSize + obstacle.size) / 2 / MediaQuery.of(context).size.width;
+      
       if (distance < collisionDistance) {
         // Отскок от препятствия
         double angle = atan2(ballY - obstacle.y, ballX - obstacle.x);
-
+        
         ballSpeedX = cos(angle) * 0.05;
         ballSpeedY = sin(angle) * 0.05;
-
+        
         // Увеличиваем счет за столкновение
         score += 5;
       }
     }
   }
-
-  void _checkBonusCollisions() {
-    for (var bonus in bonuses) {
-      if (!bonus.isActive) continue;
-
-      final distance = sqrt(pow(ballX - bonus.x, 2) + pow(ballY - bonus.y, 2));
-      double collisionDistance =
-          (ballSize + bonus.size) / 2 / MediaQuery.of(context).size.width;
-
-      if (distance < collisionDistance) {
-        bonus.isActive = false; // Деактивируем бонус
-
-        if (bonus.isGood) {
-          // Зеленый бонус (+25 очков)
-          scoreToAdd += 25;
-          score += 25;
-        } else {
-          // Красный бонус
-          if (widget.level.league == League.Green) {
-            // В зеленой лиге красные бонусы отнимают 50 очков
-            scoreToAdd -= 50;
-            score -= 50;
-            if (score < 0) score = 0;
-          } else {
-            // В красной лиге красные бонусы убивают
-            _gameOver(false);
-            return;
-          }
-        }
-      }
-    }
-  }
-
-  void _jump() {
-    if (_isOnGround() || _isOnPlatform()) {
-      setState(() {
-        ballSpeedY = jumpForce;
-      });
-    }
-  }
-
-  void _moveLeft() {
+  
+  void _jumpLeft() {
+    if (gameOver) return;
+    
     setState(() {
-      ballSpeedX -= diagonalForce;
-      // Ограничиваем максимальную скорость
-      if (ballSpeedX < -0.05) ballSpeedX = -0.05;
+      // Прыжок по диагонали влево и вверх
+      ballSpeedY = jumpForce;
+      ballSpeedX = -diagonalForce;
     });
   }
-
-  void _moveRight() {
+  
+  void _jumpRight() {
+    if (gameOver) return;
+    
     setState(() {
-      ballSpeedX += diagonalForce;
-      // Ограничиваем максимальную скорость
-      if (ballSpeedX > 0.05) ballSpeedX = 0.05;
+      // Прыжок по диагонали вправо и вверх
+      ballSpeedY = jumpForce;
+      ballSpeedX = diagonalForce;
     });
   }
-
-  bool _isOnGround() {
-    return ballY >= 0.95;
-  }
-
-  bool _isOnPlatform() {
-    for (var platform in platforms) {
-      bool isAbovePlatform = ballX >=
-              platform.x -
-                  platform.width / MediaQuery.of(context).size.width / 2 &&
-          ballX <=
-              platform.x +
-                  platform.width / MediaQuery.of(context).size.width / 2;
-
-      double ballBottom =
-          ballY + ballSize / MediaQuery.of(context).size.height / 3 / 2;
-      double platformTop = platform.y -
-          platform.height / MediaQuery.of(context).size.height / 3 / 2;
-
-      if (isAbovePlatform &&
-          (platformTop - ballBottom).abs() < 0.01 &&
-          ballSpeedY >= 0) {
-        return true;
+  
+  void _resetGame() {
+    setState(() {
+      ballX = 0.0;
+      ballY = 0.0;
+      ballSpeedX = 0.0;
+      ballSpeedY = 0.0;
+      
+      // Новая случайная позиция для лунки
+      final random = Random();
+      holeX = random.nextDouble() * 1.5 - 0.75;
+      
+      // Очищаем препятствия
+      obstacles.clear();
+      
+      gameOver = false;
+      gameWon = false;
+      
+      // Сбрасываем счет только при проигрыше
+      if (!gameWon) {
+        score = 0;
       }
+      
+      _controller.repeat();
+    });
+  }
+  
+  void _goToNextLevel(BuildContext context) {
+    // Найти текущий индекс уровня
+    int currentIndex = MainMenu.levels.indexOf(widget.level);
+    
+    // Проверить, есть ли следующий уровень
+    if (currentIndex < MainMenu.levels.length - 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GameScreen(level: MainMenu.levels[currentIndex + 1]),
+        ),
+      );
+    } else {
+      // Это был последний уровень, возвращаемся в меню
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MainMenu(),
+        ),
+      );
     }
-    return false;
   }
-
-  void _gameOver(bool success) {
-    setState(() {
-      gameOver = true;
-      gameWon = success;
-
-      if (success) {
-        // За завершение уровня добавляем 100 очков
-        scoreToAdd += 100;
-        score += 100;
-
-        // Проверяем, выполнена ли цель уровня
-        if (score >= widget.level.targetScore) {
-          levelCompleted = true;
-        }
-
-        // Обновляем общий счет
-        widget.onScoreUpdate(score);
-      }
-
-      _controller.stop();
-    });
+  
+  void _returnToMenu(BuildContext context) {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainMenu(),
+      ),
+    );
   }
-
+  
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.level.name),
-        centerTitle: true,
-      ),
-      body: GestureDetector(
-        onTap: _jump,
-        onPanUpdate: (details) {
-          if (details.delta.dx < 0) {
-            _moveLeft();
-          } else if (details.delta.dx > 0) {
-            _moveRight();
-          }
-        },
-        child: CustomPaint(
-          painter: GamePainter(
-            ballX: ballX,
-            ballY: ballY,
-            ballSize: ballSize,
-            holeX: holeX,
-            holeY: holeY,
-            holeSize: holeSize,
-            obstacles: obstacles,
-            bonuses: bonuses,
-            platforms: platforms,
+        backgroundColor: widget.level.color,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                'Цель: ${widget.level.targetScore} / Счет: $score',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
-          child: Container(),
-        ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Container(
+              color: Colors.lightBlue[100],
+              child: Center(
+                child: Stack(
+                  children: [
+                    // Лунка
+                    Positioned(
+                      left: MediaQuery.of(context).size.width / 2 + holeX * MediaQuery.of(context).size.width / 2 - holeSize / 2,
+                      top: MediaQuery.of(context).size.height / 3 + holeY * MediaQuery.of(context).size.height / 3 - holeSize / 2,
+                      child: Container(
+                        width: holeSize,
+                        height: holeSize,
+                        decoration: const BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    
+                    // Препятствия
+                    ...obstacles.map((obstacle) => Positioned(
+                      left: MediaQuery.of(context).size.width / 2 + obstacle.x * MediaQuery.of(context).size.width / 2 - obstacle.size / 2,
+                      top: MediaQuery.of(context).size.height / 3 + obstacle.y * MediaQuery.of(context).size.height / 3 - obstacle.size / 2,
+                      child: Container(
+                        width: obstacle.size,
+                        height: obstacle.size,
+                        decoration: BoxDecoration(
+                          color: widget.level.color,
+                          borderRadius: BorderRadius.circular(5),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 3,
+                              offset: Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )),
+                    
+                    // Шарик
+                    Positioned(
+                      left: MediaQuery.of(context).size.width / 2 + ballX * MediaQuery.of(context).size.width / 2 - ballSize / 2,
+                      top: MediaQuery.of(context).size.height / 3 + ballY * MediaQuery.of(context).size.height / 3 - ballSize / 2,
+                      child: Container(
+                        width: ballSize,
+                        height: ballSize,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 5,
+                              offset: Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    
+                    // Сообщение о победе
+                    if (gameWon)
+                      Center(
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: levelCompleted ? Colors.green[100] : Colors.amber[100],
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                levelCompleted ? 'Уровень пройден!' : 'Попробуй еще раз!',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: levelCompleted ? Colors.green[800] : Colors.amber[800],
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                'Ваш счет: $score / ${widget.level.targetScore}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: levelCompleted 
+                                      ? () => _goToNextLevel(context)
+                                      : _resetGame,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: levelCompleted ? Colors.green : Colors.amber,
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    ),
+                                    child: Text(
+                                      levelCompleted ? 'Следующий уровень' : 'Попробовать снова',
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  ElevatedButton(
+                                    onPressed: () => _returnToMenu(context),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.blue,
+                                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    ),
+                                    child: const Text(
+                                      'В меню',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: Colors.grey[300],
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Увеличенная кнопка влево
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: _jumpLeft,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(20),
+                          backgroundColor: widget.level.color,
+                        ),
+                        child: const Icon(
+                          Icons.arrow_back,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  // Увеличенная кнопка вправо
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: _jumpRight,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.all(20),
+                          backgroundColor: widget.level.color,
+                        ),
+                        child: const Icon(
+                          Icons.arrow_forward,
+                          size: 40,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
-  }
-}
-
-class GamePainter extends CustomPainter {
-  final double ballX;
-  final double ballY;
-  final double ballSize;
-  final double holeX;
-  final double holeY;
-  final double holeSize;
-  final List<Obstacle> obstacles;
-  final List<Bonus> bonuses;
-  final List<Platform> platforms;
-
-  GamePainter({
-    required this.ballX,
-    required this.ballY,
-    required this.ballSize,
-    required this.holeX,
-    required this.holeY,
-    required this.holeSize,
-    required this.obstacles,
-    required this.bonuses,
-    required this.platforms,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-
-    // Рисуем лунку
-    paint.color = Colors.black;
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(holeX * size.width / 2 + size.width / 2,
-            holeY * size.height / 2 + size.height / 2),
-        width: holeSize,
-        height: holeSize,
-      ),
-      paint,
-    );
-
-    // Рисуем шарик
-    paint.color = Colors.blue;
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(ballX * size.width / 2 + size.width / 2,
-            ballY * size.height / 2 + size.height / 2),
-        width: ballSize,
-        height: ballSize,
-      ),
-      paint,
-    );
-
-    // Рисуем препятствия
-    paint.color = Colors.red;
-    for (var obstacle in obstacles) {
-      canvas.drawRect(
-        Rect.fromCenter(
-          center: Offset(obstacle.x * size.width / 2 + size.width / 2,
-              obstacle.y * size.height / 2 + size.height / 2),
-          width: obstacle.size,
-          height: obstacle.size,
-        ),
-        paint,
-      );
-    }
-
-    // Рисуем бонусы
-    for (var bonus in bonuses) {
-      paint.color = bonus.isGood ? Colors.green : Colors.red;
-      canvas.drawRect(
-        Rect.fromCenter(
-          center: Offset(bonus.x * size.width / 2 + size.width / 2,
-              bonus.y * size.height / 2 + size.height / 2),
-          width: bonus.size,
-          height: bonus.size,
-        ),
-        paint,
-      );
-    }
-
-    // Рисуем платформы
-    paint.color = Colors.brown;
-    for (var platform in platforms) {
-      canvas.drawRect(
-        Rect.fromCenter(
-          center: Offset(platform.x * size.width / 2 + size.width / 2,
-              platform.y * size.height / 2 + size.height / 2),
-          width: platform.width,
-          height: platform.height,
-        ),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }
