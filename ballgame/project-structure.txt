@@ -1,0 +1,20 @@
+ballgame/
+├── lib/
+│   ├── main.dart                 # App entry point and minimal setup
+│   ├── models/
+│   │   ├── league.dart           # League data model
+│   │   ├── game_level.dart       # GameLevel data model
+│   │   ├── obstacle.dart         # Obstacle data model
+│   │   └── user_progress.dart    # User's game progress
+│   ├── screens/
+│   │   ├── main_menu.dart        # Main menu screen
+│   │   └── game_screen.dart      # Game screen
+│   ├── widgets/
+│   │   ├── level_card.dart       # Level selection card
+│   │   └── game_controls.dart    # Game control buttons
+│   ├── game/
+│   │   ├── game_physics.dart     # Physics calculations
+│   │   ├── obstacle_manager.dart # Obstacle creation and management
+│   │   └── collision_detector.dart # Collision detection logic
+│   └── data/
+│       └── levels_data.dart      # Level definitions
